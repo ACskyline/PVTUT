@@ -10,6 +10,14 @@ PVTUT also supports vertically placed terrain decals. In this case, it is using 
 
 PVTUT supports multi-terrain layout, which means you can have more than 12 splat maps in your scene in total.
 
+You can find all the references at [GDC vault](https://www.gdcvault.com/), but just in case, these are some other links to the same material.
+
+* [Adaptive Virtual Texture](http://twvideo01.ubm-us.net/o1/vault/gdc2015/presentations/Chen_Ka_AdaptiveVirtualTexture.pdf)
+
+* [Procedural Virtual Texture](https://media.contentapi.ea.com/content/dam/eacom/frostbite/files/gdc12-terrain-in-battlefield3.pdf)
+
+* [Mega Texture](http://s09.idav.ucdavis.edu/talks/05-JP_id_Tech_5_Challenges.pdf)
+
 ## SHOWCASE 1
 
 ### PVTUT Composite(final result, LOD level, normal, tile layout)
@@ -38,7 +46,7 @@ PVTUT supports multi-terrain layout, which means you can have more than 12 splat
 
 ## SHOWCASE 4 (in motion)
 
-### Surroundings
+### Composite
 
 ![](a.gif)
 
@@ -46,7 +54,7 @@ PVTUT supports multi-terrain layout, which means you can have more than 12 splat
 
 ![](b.gif)
 
-### Tile Layout
+### LOD levels
 
 ![](c.gif)
 
