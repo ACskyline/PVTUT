@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf5f969f960bef8449fee2204a37e5a3, type: 3}
+  m_Name: myProjection_Kojima_Blue
+  m_EditorClassIdentifier: 
+  type: 0
+  instanced: 0
+  forceForward: 0
+  priority: 0
+  transparencyType: 0
+  cutoff: 0.2
+  tiling: {x: 0, y: 0}
+  offset: {x: 0, y: 0}
+  maskMethod: 0
+  masks: 00000000
+  projectionLimit: 80
+  _Cutoff: 78
+  _TilingOffset: 434
+  _MaskBase: 435
+  _MaskLayers: 436
+  albedo:
+    texture: {fileID: 2800000, guid: 51a56aa066eae8b4caaaca89cd019cde, type: 3}
+    color: {r: 0, g: 1, b: 1, a: 1}
+    _MainTex: 8
+    _Color: 84
+  metallic:
+    texture: {fileID: 0}
+    metallicity: 0
+    glossiness: 0
+    _MetallicGlossMap: 438
+    _Metallic: 439
+    _Glossiness: 440
+  normal:
+    texture: {fileID: 0}
+    strength: 1
+    _BumpMap: 80
+    _BumpScale: 441
+  emissive:
+    texture: {fileID: 0}
+    color: {r: 0.1862024, g: 0.332001, b: 0.61764705, a: 1}
+    intensity: 0
+    _EmissionMap: 442
+    _EmissionColor: 59

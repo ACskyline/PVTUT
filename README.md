@@ -1,10 +1,8 @@
 # Procedural Virtual Texture with Unity Terrain
 
--------------------------------------------------
-
 ## OVERVIEW
 
---------
+![](1and4and5and6.jpg)
 
 PVTUT is an Unity plugin which implemented procedural virtual texture with Unity terrain(PVTUT). It supports up to 12 splat maps per terrain. PVTUT improves framerate at the expense of the texture quality at distance. Also, it will take up a lot of VRAM space, so this is a trade-off between space and time.
 
@@ -12,9 +10,47 @@ PVTUT also supports vertically placed terrain decals. In this case, it is using 
 
 PVTUT supports multi-terrain layout, which means you can have more than 12 splat maps in your scene in total.
 
-## DETALS
+## SHOWCASE 1
 
-------
+### PVTUT Composite(final result, LOD level, normal, tile layout)
+
+![](9and10and11and12.jpg)
+
+## SHOWCASE 2
+
+### PVTUT(up, 1.6ms) v.s. Unity Terrain with Standard Terrain Shader(shadow casting off, 4.5ms)
+
+![](7and8.jpg)
+
+## SHOWCASE 3
+
+### PVTUT Composite(final result, LOD level, normal, tile layout)
+
+![](1and4and5and6.jpg)
+
+### PVTUT(up, 2.3ms) v.s. Unity Terrain with Standard Terrain Shader(shadow casting off, 6.9ms)
+
+![](1and2.jpg)
+
+### PVTUT(up, 2.3ms) v.s. Unity Terrain with Standard Terrain Shader(shadow casting off, Dynamic Decals disabled, 4.2ms)
+
+![](1and3.jpg)
+
+## SHOWCASE 4 (in motion)
+
+### Surroundings
+
+![](a.gif)
+
+### Final Result
+
+![](b.gif)
+
+### Tile Layout
+
+![](c.gif)
+
+## DETALS
 
 ### Intro
 
@@ -54,8 +90,6 @@ If we store the indirection data for every part of every LOD in textures, the in
 Since we have several LODs, we use several indirection maps. This can guarantee all the area of the terrain will be covered in new pixels(but for different LOD). 
 
 ## PROBLEMS & SOLUTIONS
-
---------------------
 
 This section is for the problems that I encounted, what caused them and the solutions to them.
 
