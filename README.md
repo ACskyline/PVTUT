@@ -26,7 +26,7 @@ You can find all the references at [GDC vault](https://www.gdcvault.com/), but j
 
 ## SHOWCASE 2
 
-### PVTUT(up, 1.6ms) v.s. Unity Terrain with Standard Terrain Shader(shadow casting off, 4.5ms)
+### PVTUT(up, 1.6ms) v.s. Unity Terrain with Standard Terrain Shader(shadow casting off, 3.5ms)
 
 ![](7and8.jpg)
 
@@ -58,7 +58,7 @@ You can find all the references at [GDC vault](https://www.gdcvault.com/), but j
 
 ![](c.gif)
 
-## DETALS
+## DETAILS
 
 ### Intro
 
