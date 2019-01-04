@@ -127,7 +127,7 @@ Since we have several LODs, we use several indirection maps. This can guarantee 
 
 This section is for the problems that I encounted, what caused them and the solutions to them.
 
-### Tile Crease
+### Tile Seam
 
 When using translated uv coordinates to sample from the texture arrays, I noticed there were thin outlines between different tiles. The reason for that is when sampling with tex2D(texture, uv), the two mipmap levels being used are calculated by the derivative of uv coordinates. Since we are sampling using the uv in a texture array, the u coordinates of the rightmost pixel of a tile is 1 and the u coordinates of the leftmost pixel of the tile on the right of it is 0. This makes the derivative wrong and the GPU will use the coarsest level of mipmap to sample the color because it thinks the texture is being projected to a really small area. This makes the color become grayish. The solution to it is to use tex2DGrad(texture, uv, ddx(uv), ddy(uv)) which requires modified derivatives.
 
