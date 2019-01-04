@@ -1,8 +1,8 @@
-# Procedural Virtual Texture with Unity Terrain
+﻿# Procedural Virtual Texture with Unity Terrain
 
 ## OVERVIEW
 
-![](1and4and5and6.jpg)
+![](img/1and4and5and6.jpg)
 
 PVTUT is an Unity plugin which implemented procedural virtual texture with Unity terrain(PVTUT). It supports up to 12 splat maps per terrain. PVTUT improves framerate at the expense of the texture quality at distance. Also, it will take up a lot of VRAM space, so this is a trade-off between space and time.
 
@@ -22,41 +22,41 @@ You can find all the references at [GDC vault](https://www.gdcvault.com/), but j
 
 ### PVTUT Composite(final result, LOD level, normal, tile layout)
 
-![](9and10and11and12.jpg)
+![](img/9and10and11and12.jpg)
 
 ## SHOWCASE 2
 
 ### PVTUT(up, 1.6ms) v.s. Unity Terrain with Standard Terrain Shader(shadow casting off, 3.5ms)
 
-![](7and8.jpg)
+![](img/7and8.jpg)
 
 ## SHOWCASE 3
 
 ### PVTUT Composite(final result, LOD level, normal, tile layout)
 
-![](1and4and5and6.jpg)
+![](img/1and4and5and6.jpg)
 
 ### PVTUT(up, 2.3ms) v.s. Unity Terrain with Standard Terrain Shader(shadow casting off, 6.9ms)
 
-![](1and2.jpg)
+![](img/1and2.jpg)
 
 ### PVTUT(up, 2.3ms) v.s. Unity Terrain with Standard Terrain Shader(shadow casting off, Dynamic Decals disabled, 4.2ms)
 
-![](1and3.jpg)
+![](img/1and3.jpg)
 
 ## SHOWCASE 4 (in motion)
 
 ### Composite
 
-![](a.gif)
+![](img/a.gif)
 
 ### Final Result
 
-![](b.gif)
+![](img/b.gif)
 
 ### LOD levels
 
-![](c.gif)
+![](img/c.gif)
 
 ## DETAILS
 
@@ -78,11 +78,37 @@ If we can store the blended result in one texture, then the time of sampling mul
 
 ### Level Of Detail
 
-So, how do we decide which part of the terrain needs which level of detail? In Megatexture, id software uses a feedback buffer to decide which part of the texture can be seen and only put those parts in the single massive texture. In Procedural Virtual Texture(Battlefield3 and FarCry4), position and view direction is enough for terrain rendering. In my implementation, I simply use position. This means, if you only look around without moving, there will be no texture baking happens.
+So, how do we decide which part of the terrain needs which level of detail? In Megatexture, id software uses a feedback buffer to decide which part of the texture can be seen and only put those parts in the single massive texture. In Procedural Virtual Texture(Battlefield3 and FarCry4), position and view direction is enough for terrain rendering. In my implementation, I simply use position. This means, if you only look around without moving, there will be no texture baking happening.
 
 ### Storage
 
 The texture will be stored in VRAM, so how do we do it? There are two general options. Either store them in one texture atlas(normally smaller than 8192x8192) or store them in a texture array. No matter where we store them, it will always require a tiling system to map different sections of the texture to different parts of the object(terrain in our case) or even different objects(in the case of Megatexture). The two options have their pros and cons. PVTUT uses texture arrays to store the data. One LOD has one texture array assigned to it.
+
+#### A Simple Example (3 LOD levels)
+
+* Multi-terrain
+
+![](img/multi-terrain.jpg)
+
+* LOD Chunk Partition
+
+|                 |        LOD 0         |        LOD 1         |        LOD 2         | 
+|:---------------:|:--------------------:|:--------------------:|:--------------------:|
+| Chunk Partition |  ![](img/lod0.jpg)   |  ![](img/lod1.jpg)   |  ![](img/lod2.jpg)   |
+
+* Texture Array Size Determination Code
+
+![](texture2darray_3.jpg)
+
+* A Texture Array Size Example
+
+|  LOD Partition |      Chunk Partition      |     Texture Array Size      | 
+|:--------------:|:-------------------------:|:---------------------------:|
+|![](img/lod.jpg)|![](img/texture2darray.jpg)|![](img/texture2darray_2.jpg)|
+
+* A Page Table Example
+
+![](img/pagetable.jpg)
 
 ### Mipmap
 
