@@ -98,7 +98,7 @@ The texture will be stored in VRAM, so how do we do it? There are two general op
 
 * Texture Array Size Determination Code
 
-![](texture2darray_3.jpg)
+![](img/texture2darray_3.jpg)
 
 * A Texture Array Size Example
 
