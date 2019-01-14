@@ -84,7 +84,20 @@ So, how do we decide which part of the terrain needs which level of detail? In M
 
 The texture will be stored in VRAM, so how do we do it? There are two general options. Either store them in one texture atlas(normally smaller than 8192x8192) or store them in a texture array. No matter where we store them, it will always require a tiling system to map different sections of the texture to different parts of the object(terrain in our case) or even different objects(in the case of Megatexture). The two options have their pros and cons. PVTUT uses texture arrays to store the data. One LOD has one texture array assigned to it.
 
-#### A Simple Example (3 LOD levels)
+### Mipmap
+
+The reason PVTUT uses texture arrays is that it is relatively easier(or faster) to generate mipmaps for a texture array than a texture atlas. Why do mipmaps matter? As mentioned above, PVTUT uses position to decide LOD of a particular area of the terrain. If a hill and a plain exist at the same area, we want to use at least tri-linear sampling to avoid aliasing, pixel jittering in particular. That means for that area, we need the whole mipmap chain to exist in VRAM. We can either generate mipmaps by ourselves(software approach) or generate them using GPU(hardware approach), (FarCry4 uses software approach to store only two mipmap level for each area, but I don't know how they decide the resolution of the two level), which is used by PVTUT.
+
+### Indirection Method
+
+As metioned above, there will always be a tiling system to map the original uv of the object to the ones used in the virtual texture. In Megatexture, I believe they modified the uv of the models off-line because they don't need to procedurally generate any textures. In Procedural Virtual Texture, indirection texture or indirection table can be used to handle the UV coordinates conversion. PVTUT uses one indirection texture for each LOD texture array. The terrain uses its original uv to sample the indirection texture to get the final coordinates.
+
+### Clipmap
+
+If we store the indirection data for every part of every LOD in textures, the indirection data can be massive.If you divide your terrain into 1024x1024 tiles, The finest LOD indirection texture will be 1024x1024 pixels. Everytime you bake a finest tile of the terrain, you will have to update this 1024x1024 texture. However, we don't need the indirection texture to be so large, because the coarser LOD of the tiles far from us are used. And depending on your texture array setup, those unused finer tile may not be resident at all. So we don't need to store their indirection information. PVTUT uses a 64x64 indirection texture for each LOD texture array(just like Battlefield3, not sure about FarCry4). The wrapping mode of the indirection texture is set to repeat. This way, we can just use this texture as it's infinite large, and all new pixels will be set to the position of old pixels. This technique is called clipmap.
+Since we have several LODs, we use several indirection maps. This can guarantee all the area of the terrain will be covered in new pixels(but for different LOD). 
+
+### A Simple Example (3 LOD levels)
 
 * Multi-terrain
 
@@ -108,20 +121,13 @@ The texture will be stored in VRAM, so how do we do it? There are two general op
 
 * A Page Table Example
 
-![](img/pagetable.jpg)
+![](img/clipmap.jpg)
 
-### Mipmap
+* LOD Page Table with Clipmap
 
-The reason PVTUT uses texture arrays is that it is relatively easier(or faster) to generate mipmaps for a texture array than a texture atlas. Why do mipmaps matter? As mentioned above, PVTUT uses position to decide LOD of a particular area of the terrain. If a hill and a plain exist at the same area, we want to use at least tri-linear sampling to avoid aliasing, pixel jittering in particular. That means for that area, we need the whole mipmap chain to exist in VRAM. We can either generate mipmaps by ourselves(software approach) or generate them using GPU(hardware approach), (FarCry4 uses software approach to store only two mipmap level for each area, but I don't know how they decide the resolution of the two level), which is used by PVTUT.
-
-### Indirection Method
-
-As metioned above, there will always be a tiling system to map the original uv of the object to the ones used in the virtual texture. In Megatexture, I believe they modified the uv of the models off-line because they don't need to procedurally generate any textures. In Procedural Virtual Texture, indirection texture or indirection table can be used to handle the UV coordinates conversion. PVTUT uses one indirection texture for each LOD texture array. The terrain uses its original uv to sample the indirection texture to get the final coordinates.
-
-### Clipmap
-
-If we store the indirection data for every part of every LOD in textures, the indirection data can be massive.If you divide your terrain into 1024x1024 tiles, The finest LOD indirection texture will be 1024x1024 pixels. Everytime you bake a finest tile of the terrain, you will have to update this 1024x1024 texture. However, we don't need the indirection texture to be so large, because the coarser LOD of the tiles far from us are used. And depending on your texture array setup, those unused finer tile may not be resident at all. So we don't need to store their indirection information. PVTUT uses a 64x64 indirection texture for each LOD texture array(just like Battlefield3, not sure about FarCry4). The wrapping mode of the indirection texture is set to repeat. This way, we can just use this texture as it's infinite large, and all new pixels will be set to the position of old pixels. This technique is called clipmap.
-Since we have several LODs, we use several indirection maps. This can guarantee all the area of the terrain will be covered in new pixels(but for different LOD). 
+|                 |        LOD 0         |        LOD 1         |        LOD 2         | 
+|:---------------:|:--------------------:|:--------------------:|:--------------------:|
+|    Page Table   |![](img/clipmap0.jpg) |![](img/clipmap1.jpg) |![](img/clipmap2.jpg) |
 
 ## PROBLEMS & SOLUTIONS
 
