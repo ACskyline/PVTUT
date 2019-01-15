@@ -86,9 +86,17 @@ The texture will be stored in VRAM, so how do we do it? There are two general op
 
 ### Mipmap
 
-The reason PVTUT uses texture arrays is that it is relatively easier(or faster) to generate mipmaps for a texture array than a texture atlas. Why do mipmaps matter? As mentioned above, PVTUT uses position to decide LOD of a particular area of the terrain. If a hill and a plain exist at the same area, we want to use at least tri-linear sampling to avoid aliasing, pixel jittering in particular. That means for that area, we need the whole mipmap chain to exist in VRAM. We can either generate mipmaps by ourselves(software approach) or generate them using GPU(hardware approach), (FarCry4 uses software approach to store only two mipmap level for each area probabaly for transitioning), which is used by PVTUT.
+The reason PVTUT uses texture arrays is that it is relatively easier(or faster) to generate mipmaps for a texture array than a texture atlas. Why do mipmaps matter? 
 
-An better of the current LOD->Mipmap decision process can be achieved by using CDLOD where the proper LOD of each chunk is decided by it's distance to eye than pure 2D distance. This is done by performing a box-sphere intersection detection and a quad-tree traversal. This method will always assign appropriate LOD to each chunk. If a hill and a plain exist at the same area, the quad-tree traversal will go deeper in the chunks which still intersects the eye bounding sphere, no matter it's a hill or a plain. It is a more dynamic and uniform LOD decision algorithm(and corresponding data structure(the quad tree)) that works similarly as how Mipmap levels are decided.
+One of the general reasons to use mipmap is to eliminate the flickering when using a point filter to down sample a texture. For example, when texturing a floor. When you look forward, the floor at distance only take a small proportion of the screen pixels but take the same amount of texel in the texture as the floor near to you. You don't want to use only some of the color in the texture. Instead, you want it to reflect a general look of all the color it should use. So we genreate a smaller and blurred version of the original texture and sample from this texture to give the general look that we need.
+
+As mentioned above, PVTUT uses position to decide LOD of a particular area of the terrain. If a hill and a plain exist at the same area which is assigned to, say, LOD 3 and the corresponding texture is of the resolution 512x512, then we will also need the same texture of the resolution 256x256, 128x128, 64x64, 32x32, 16x16, 8x8, 4x4, 2x2, 1x1. Because we don't know how many texels the pixels in this area will take. Take this picture for example:
+
+![](img/mipmap.jpg)
+
+The face of the hill has the largest texel/pixel ratio. The side of the hill has a smaller one. The ground has the smallest. If we use a large picture with point sampling or bi-linear sampling, flickering will happen on the ground. If we use a small texture the hill will be blurry. We need tri-linear sampling to avoid these artifacts. That means for that area, we need the whole mipmap chain to exist in VRAM (Besically the LOD you decided for it is only the maximum resolution. 
+
+Maybe you think we can use the texture of the next LOD to blend with the texture of the current LOD. But my implementation can not guarantee the texture of next LOD always exists in GPU memory. And also, texture of the next LOD is not enough to eliminate the artifact. We still need the rest of the chain because it's not guaranteed that the texel/piexl ratio is the same everywhere in that area, they may fall into several ranges. Blending a sample from a 512x512 texture and a sample from 256x256 texture(e.g. hill face) is different from blending a sample from a 128x128 texture and a sample from a 64x64 texture(e.g. ground), and we need them both for that tile. That's why we need the whole chain.
 
 ### Indirection Method
 
