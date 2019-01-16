@@ -1,4 +1,4 @@
-﻿# Procedural Virtual Texture with Unity Terrain
+﻿# View-Independent Procedural Virtual Texture with Unity Terrain
 
 ## OVERVIEW
 
