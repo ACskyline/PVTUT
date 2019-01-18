@@ -4,7 +4,7 @@
 
 ![](img/1and4and5and6.jpg)
 
-PVTUT is an Unity plugin which implemented procedural virtual texture with Unity terrain(PVTUT). It supports up to 12 splat maps per terrain. PVTUT improves framerate at the expense of the texture quality at distance. Also, it will take up a lot of VRAM space, so this is a trade-off between space and time.
+PVTUT is an Unity plugin which features procedural virtual texture with Unity terrain(PVTUT). It supports up to 12 splat maps per terrain. PVTUT improves framerate at the expense of the texture quality at distance. Also, it will take up a lot of VRAM space, so this is a trade-off between space and time.
 
 PVTUT also supports vertically placed terrain decals. In this case, it is using a free Unity plugin called Dynamic Decals to provide in-editor preview. In run-time, all Dynamic Decals objects will be disabled, all decals you see are baked in the texture.
 
