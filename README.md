@@ -84,6 +84,8 @@ So, how do we decide which part of the terrain needs which level of detail? In M
 
 The texture will be stored in VRAM, so how do we do it? There are two general options. Either store them in one texture atlas(normally smaller than 8192x8192) or store them in a texture array. No matter where we store them, it will always require a tiling system to map different sections of the texture to different parts of the object(terrain in our case) or even different objects(in the case of Megatexture). The two options have their pros and cons. PVTUT uses texture arrays to store the data. One LOD has one texture array assigned to it.
 
+One of the reasons that I didn't use Unity sparse texture was at that point of time, I didn't find any interface of sparse texture class to use sparse textures as render textures in Unity. It seems like it involves some sort of CPU mapping/read&write to render to the sparse texture, so I just gave it up and used texture array instead.
+
 ### Mipmap
 
 The reason PVTUT uses texture arrays is that it is relatively easier(or faster) to generate mipmaps for a texture array than a texture atlas. Why do mipmaps matter? 
@@ -97,6 +99,8 @@ As mentioned above, PVTUT uses position to decide LOD of a particular area of th
 The face of the hill has the largest pixel/texel ratio. The side of the hill has a smaller one. The ground has the smallest. If we use a large picture with point sampling or bi-linear sampling, flickering will happen on the ground. If we use a small texture the hill will be blurry. We need tri-linear sampling to avoid these artifacts. That means for that area, we need the whole mipmap chain to exist in VRAM (basically the LOD you decided for it is only the maximum resolution).
 
 Maybe you think we can use the texture of the next LOD to blend with the texture of the current LOD. But my implementation can not guarantee the texture of next LOD always exists in GPU memory. And also, texture of the next LOD is not enough to eliminate the artifact. We still need the rest of the chain because it's not guaranteed that the texel/piexl ratio is the same everywhere in that area, they may fall into several ranges. Blending a sample from a 512x512 texture and a sample from 256x256 texture(e.g. hill face) is different from blending a sample from a 128x128 texture and a sample from a 64x64 texture(e.g. ground), and they are both different from blending a sample from a 2x2 texture and a sample from a 1x1 texture(e.g. distant ground in the same tile). Obviously we need all of them for that tile. That's why we need the whole chain.
+
+My implementation failed to reuse mip maps from different LODs. To be specific, shift up or down the mip map of the current LOD to adjacent LODs, which is well explained in [Adaptive Virtual Texture](http://twvideo01.ubm-us.net/o1/vault/gdc2015/presentations/Chen_Ka_AdaptiveVirtualTexture.pdf). For example, when an LOD 1 tile becomes LOD 2, I should assign LOD 1 mip n to LOD 2 mip n - 1 and render an extra LOD 2 mip MAX. when an LOD 2 tile becomes LOD 1, I should assign LOD 2 mip n to LOD 1 mip n + 1 and render an extra LOD 1 mip 0. This way each time an LOD change happens, I only need to render one mip and reuse the others in stead of letting GPU to generate the whole chain.
 
 ### Indirection Method
 
@@ -162,3 +166,7 @@ If you update too many tiles in one frame or the quality of the tile is too high
 ### Unity Add Pass
 
 Unity terrain system use a hidden renderer to draw the terrain. It will detect how many splat maps are stored in the terrain data. If there are more than 4 splat maps, it will automatically add a separate pass to render the result of the extra 4 splat maps until all splat maps are accounted for. Thus, if I just swap the material of a terrain with my own, the hidden renderer will still think it needs the extra pass which is exactly what PVTUT tries to solve. To bypass that, I had to duplicate similar terrain data except there is only one splat map and use PVTUT to render a new terrain with these terrain data while disabling the original ones(you can also destroy them if you want, they are only needed to create the baking material). 
+
+### Future Works
+
+I probabaly will make stand alone demo in DirectX12 or Vulkan and it will REUSE MIP MAPs from adjacent LODs because that is the point of this technique.
