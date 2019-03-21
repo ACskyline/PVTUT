@@ -1,4 +1,8 @@
-﻿# View-Independent Procedural Virtual Texture with Unity Terrain
+# View-Independent Procedural Virtual Texture with Unity Terrain
+
+## Final Result
+
+![](img/b.gif)
 
 ## OVERVIEW
 
@@ -49,10 +53,6 @@ You can find all the references at [GDC vault](https://www.gdcvault.com/), but j
 ### Composite
 
 ![](img/a.gif)
-
-### Final Result
-
-![](img/b.gif)
 
 ### LOD levels
 
